@@ -18,7 +18,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 // Globals
 Game Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-int main(int argc, char * argv[]) {
+int main(int /*argc*/, char** /*argv*/) {
 
     // Load GLFW and Create a Window
     glfwInit();
@@ -38,7 +38,7 @@ int main(int argc, char * argv[]) {
     // Create Context and Load OpenGL Functions
     glfwMakeContextCurrent(mWindow);
     gladLoadGL();
-    fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
+    fprintf(stderr, "OpenGL Version %s\n", glGetString(GL_VERSION));
 
     // GLFW Settings
     glfwSetKeyCallback(mWindow, KeyCallback);
@@ -81,7 +81,7 @@ int main(int argc, char * argv[]) {
     return EXIT_SUCCESS;
 }
 
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mode*/)
 {
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -91,6 +91,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
         if(action == GLFW_PRESS)
             Breakout._keys[key] = GL_TRUE;
         else if(action == GLFW_RELEASE)
-            Breakout._keys[key] == GL_FALSE;
+            Breakout._keys[key] = GL_FALSE;
     }
 }
