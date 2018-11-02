@@ -8,6 +8,7 @@
 ******************************************************************/
 #include "resource_manager.h"
 
+#include <string>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -20,7 +21,7 @@ std::map<std::string, Texture2D>    ResourceManager::Textures;
 std::map<std::string, Shader>       ResourceManager::Shaders;
 
 
-Shader ResourceManager::LoadShader(const GLchar *vShaderFile, const GLchar *fShaderFile, const GLchar *gShaderFile, std::string name)
+Shader ResourceManager::LoadShader(const std::string vShaderFile, const std::string fShaderFile, const std::string gShaderFile, std::string name)
 {
     Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
     return Shaders[name];
@@ -31,7 +32,7 @@ Shader ResourceManager::GetShader(std::string name)
     return Shaders[name];
 }
 
-Texture2D ResourceManager::LoadTexture(const GLchar *file, GLboolean alpha, std::string name)
+Texture2D ResourceManager::LoadTexture(const std::string file, GLboolean alpha, std::string name)
 {
     Textures[name] = loadTextureFromFile(file, alpha);
     return Textures[name];
@@ -52,7 +53,7 @@ void ResourceManager::Clear()
         glDeleteTextures(1, &iter.second.ID);
 }
 
-Shader ResourceManager::loadShaderFromFile(const GLchar *vShaderFile, const GLchar *fShaderFile, const GLchar *gShaderFile)
+Shader ResourceManager::loadShaderFromFile(const std::string vShaderFile, const std::string fShaderFile, const std::string gShaderFile)
 {
     // 1. Retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
@@ -74,7 +75,7 @@ Shader ResourceManager::loadShaderFromFile(const GLchar *vShaderFile, const GLch
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
         // If geometry shader path is present, also load a geometry shader
-        if (gShaderFile != nullptr)
+        if (!gShaderFile.empty())
         {
             std::ifstream geometryShaderFile(gShaderFile);
             std::stringstream gShaderStream;
@@ -87,16 +88,26 @@ Shader ResourceManager::loadShaderFromFile(const GLchar *vShaderFile, const GLch
     {
         std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
     }
+
+    if(vertexCode.empty())
+        std::cout << "ERROR::SHADER: vertexCode is empty" << std::endl;
+        
+    if (fragmentCode.empty())
+        std::cout << "ERROR::SHADER: fragmentCode is empty" << std::endl;
+
+    if (!gShaderFile.empty() && geometryCode.size() == 0)
+        std::cout << "ERROR::SHADER: geometryCode is empty" << std::endl;
+
     const GLchar *vShaderCode = vertexCode.c_str();
     const GLchar *fShaderCode = fragmentCode.c_str();
     const GLchar *gShaderCode = geometryCode.c_str();
     // 2. Now create shader object from source code
     Shader shader;
-    shader.Compile(vShaderCode, fShaderCode, gShaderFile != nullptr ? gShaderCode : nullptr);
+    shader.Compile(vShaderCode, fShaderCode, !gShaderFile.empty() ? gShaderCode : nullptr);
     return shader;
 }
 
-Texture2D ResourceManager::loadTextureFromFile(const GLchar *file, GLboolean alpha)
+Texture2D ResourceManager::loadTextureFromFile(const std::string file, GLboolean alpha)
 {
     // Create Texture object
     Texture2D texture;
@@ -108,7 +119,13 @@ Texture2D ResourceManager::loadTextureFromFile(const GLchar *file, GLboolean alp
     // Load image
     int width, height, nrChannels;
     //unsigned char* image = stbi_load(file, &width, &height, 0, texture.Image_Format == GL_RGBA ? SOIL_LOAD_RGBA : SOIL_LOAD_RGB);
-    unsigned char* data = stbi_load(file, &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(file.c_str(), &width, &height, &nrChannels, 0);
+
+    if (data == nullptr)
+    {
+        std::cout << "ERROR::Texture: failed to laod texture " << file << std::endl;
+    }
+
     // Now generate texture
     texture.Generate(width, height, data);
     // And finally free image data
