@@ -3,7 +3,6 @@
 #ifndef SPRITE_RENDERER_H
 #define SPRITE_RENDERER_H
 
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -22,7 +21,6 @@ private:
 
     #pragma endregion
 
-
     #pragma region Constructor / Destructor
 
 public:
@@ -39,7 +37,6 @@ public:
 private:
     void initRenderData();
     #pragma endregion
-
 };
 
 

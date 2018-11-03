@@ -23,7 +23,7 @@ void Game::Init()
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(this->_width), static_cast<GLfloat>(this->_height), 0.0f, -1.0f, 1.0f);
     ResourceManager::GetShader("sprite").Use();
     ResourceManager::GetShader("sprite").SetInteger("image", 0);
-    ResourceManager::GetShader("sprite").Use().SetMatrix4("projection", projection);
+    ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
 
     Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 

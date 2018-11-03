@@ -10,9 +10,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-//#include <GL/glew.h>
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 // Texture2D is able to store and configure a texture in OpenGL.
 // It also hosts utility functions for easy management.
